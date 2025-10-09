@@ -1,51 +1,107 @@
-// Projects Data - Edit this to add your own projects
-const projects = [
+// GitHub Configuration - Edit this to add your GitHub username
+const GITHUB_USERNAME = "AssiamahS"; // Change to your GitHub username
+
+// Projects Data - Can be manually added or fetched from GitHub
+let projects = [
     {
         title: "Liquid Portfolio",
         description: "A stunning portfolio website with liquid UI effects and smooth animations. Built with vanilla JavaScript and CSS.",
         tags: ["HTML", "CSS", "JavaScript"],
-        link: "#"
-    },
-    {
-        title: "Project Alpha",
-        description: "An innovative web application that showcases modern design principles and cutting-edge technology.",
-        tags: ["React", "Node.js", "MongoDB"],
-        link: "#"
-    },
-    {
-        title: "Project Beta",
-        description: "A mobile-first responsive application with seamless user experience and beautiful interactions.",
-        tags: ["Vue.js", "Firebase", "TailwindCSS"],
-        link: "#"
-    },
-    {
-        title: "Project Gamma",
-        description: "An open-source tool for developers featuring advanced functionality and clean architecture.",
-        tags: ["TypeScript", "Express", "PostgreSQL"],
-        link: "#"
-    },
-    {
-        title: "Project Delta",
-        description: "A creative experiment exploring the boundaries of web animation and interactive design.",
-        tags: ["Three.js", "WebGL", "GSAP"],
-        link: "#"
-    },
-    {
-        title: "Project Epsilon",
-        description: "A data visualization dashboard with real-time updates and beautiful charts.",
-        tags: ["D3.js", "React", "WebSocket"],
-        link: "#"
+        link: "https://github.com/AssiamahS/portfolio-site",
+        todos: [
+            "Add more projects",
+            "Customize color scheme",
+            "Add contact form"
+        ]
     }
 ];
+
+// Fetch GitHub repositories
+async function fetchGitHubProjects() {
+    try {
+        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=10`);
+        if (!response.ok) throw new Error('Failed to fetch repos');
+
+        const repos = await response.json();
+
+        // Transform GitHub repos into project format
+        const githubProjects = repos
+            .filter(repo => !repo.fork && !repo.private) // Only show your own public repos
+            .map(repo => ({
+                title: repo.name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                description: repo.description || "A GitHub project - click to view details",
+                tags: repo.topics && repo.topics.length > 0 ? repo.topics : [repo.language || "Code"],
+                link: repo.html_url,
+                homepage: repo.homepage,
+                stars: repo.stargazers_count,
+                forks: repo.forks_count,
+                todos: [] // Can be customized per project
+            }));
+
+        // Merge manual projects with GitHub projects
+        projects = [...projects, ...githubProjects];
+
+        // Re-render projects
+        renderProjects();
+
+        // Re-observe cards after new render
+        setTimeout(observeCards, 100);
+
+        // Re-add event listeners
+        setTimeout(() => {
+            document.querySelectorAll('.project-card, .project-link').forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    cursor.classList.add('expand');
+                });
+
+                element.addEventListener('mouseleave', () => {
+                    cursor.classList.remove('expand');
+                });
+            });
+        }, 100);
+
+    } catch (error) {
+        console.error('Error fetching GitHub projects:', error);
+        // If fetch fails, just render manual projects
+        renderProjects();
+    }
+}
 
 // Render Projects
 function renderProjects() {
     const projectsContainer = document.getElementById('projects');
+    projectsContainer.innerHTML = ''; // Clear existing projects
 
     projects.forEach((project, index) => {
         const projectCard = document.createElement('div');
         projectCard.className = 'project-card';
         projectCard.style.animationDelay = `${index * 0.1}s`;
+
+        // Build stats section if available
+        let statsHTML = '';
+        if (project.stars !== undefined || project.forks !== undefined) {
+            statsHTML = `
+                <div class="project-stats">
+                    ${project.stars !== undefined ? `<span class="stat">⭐ ${project.stars}</span>` : ''}
+                    ${project.forks !== undefined ? `<span class="stat">🔱 ${project.forks}</span>` : ''}
+                </div>
+            `;
+        }
+
+        // Build todo list if available
+        let todosHTML = '';
+        if (project.todos && project.todos.length > 0) {
+            todosHTML = `
+                <div class="todo-section">
+                    <button class="todo-toggle" onclick="toggleTodo(this)">
+                        <span class="toggle-icon">▶</span> Project Tasks
+                    </button>
+                    <ul class="todo-list collapsed">
+                        ${project.todos.map(todo => `<li class="todo-item">${todo}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
 
         projectCard.innerHTML = `
             <h2>${project.title}</h2>
@@ -53,18 +109,39 @@ function renderProjects() {
             <div class="tags">
                 ${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
             </div>
-            <a href="${project.link}" class="project-link" target="_blank">View Project</a>
+            ${statsHTML}
+            ${todosHTML}
+            <div class="project-links">
+                <a href="${project.link}" class="project-link" target="_blank">View Project</a>
+                ${project.homepage ? `<a href="${project.homepage}" class="project-link project-link-secondary" target="_blank">Live Demo</a>` : ''}
+            </div>
         `;
 
         // Add ripple effect on click
         projectCard.addEventListener('click', function(e) {
-            if (e.target.tagName !== 'A') {
+            if (e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON' && !e.target.classList.contains('toggle-icon')) {
                 createRipple(e, this);
             }
         });
 
         projectsContainer.appendChild(projectCard);
     });
+}
+
+// Toggle Todo List
+function toggleTodo(button) {
+    const todoList = button.nextElementSibling;
+    const icon = button.querySelector('.toggle-icon');
+
+    if (todoList.classList.contains('collapsed')) {
+        todoList.classList.remove('collapsed');
+        todoList.classList.add('expanded');
+        icon.textContent = '▼';
+    } else {
+        todoList.classList.add('collapsed');
+        todoList.classList.remove('expanded');
+        icon.textContent = '▶';
+    }
 }
 
 // Ripple Effect
@@ -176,7 +253,8 @@ function observeCards() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    renderProjects();
+    // Fetch GitHub projects first, or render manual projects if fetch fails
+    fetchGitHubProjects();
     animateCursor();
 
     // Observe cards after they're rendered

@@ -262,6 +262,13 @@ body {
     backdrop-filter: blur(10px);
 }
 
+/* Project Links */
+.project-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
 .project-link {
     display: inline-block;
     padding: 0.8rem 1.5rem;
@@ -278,6 +285,120 @@ body {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
     transform: scale(1.05);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.project-link-secondary {
+    background: linear-gradient(135deg, rgba(76, 172, 254, 0.3), rgba(0, 242, 254, 0.2));
+    border-color: rgba(76, 172, 254, 0.4);
+}
+
+.project-link-secondary:hover {
+    background: linear-gradient(135deg, rgba(76, 172, 254, 0.4), rgba(0, 242, 254, 0.3));
+}
+
+/* Project Stats */
+.project-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    padding: 0.3rem 0.8rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+/* Todo List Section */
+.todo-section {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.todo-toggle {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.todo-toggle:hover {
+    color: rgba(255, 255, 255, 0.8);
+    transform: translateX(5px);
+}
+
+.toggle-icon {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.todo-list {
+    margin-top: 1rem;
+    padding-left: 0;
+    list-style: none;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+
+.todo-list.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+}
+
+.todo-list.expanded {
+    max-height: 500px;
+    opacity: 1;
+}
+
+.todo-item {
+    position: relative;
+    padding: 0.8rem 0.5rem 0.8rem 2rem;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+    border-left: 2px solid rgba(76, 172, 254, 0.5);
+    transition: all 0.3s ease;
+}
+
+.todo-item::before {
+    content: '●';
+    position: absolute;
+    left: 0.8rem;
+    color: rgba(76, 172, 254, 0.8);
+    font-size: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.todo-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-left-color: rgba(76, 172, 254, 0.8);
+    padding-left: 2.3rem;
+}
+
+.todo-item:hover::before {
+    color: rgba(76, 172, 254, 1);
+    left: 1rem;
 }
 
 /* Liquid Cursor */
