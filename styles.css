@@ -191,6 +191,33 @@ body {
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
+.nav-links {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.nav-link {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, rgba(76, 172, 254, 0.4), rgba(0, 242, 254, 0.3));
+    border: 1px solid rgba(76, 172, 254, 0.5);
+    border-radius: 15px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.nav-link:hover {
+    background: linear-gradient(135deg, rgba(76, 172, 254, 0.5), rgba(0, 242, 254, 0.4));
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
 /* Projects Section */
 .projects {
     display: grid;
