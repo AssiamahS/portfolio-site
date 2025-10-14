@@ -94,3 +94,5 @@ To make it available at `yourusername.github.io`:
 ## License
 
 Free to use and modify for your personal portfolio!
+
+Please stay tuned!
