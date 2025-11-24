@@ -1,42 +1,92 @@
 // Projects Data - Edit this to add your own projects
 const projects = [
     {
-        title: "Liquid Portfolio",
-        description: "A stunning portfolio website with liquid UI effects and smooth animations. Built with vanilla JavaScript and CSS.",
-        tags: ["HTML", "CSS", "JavaScript"],
-        link: "#"
+        title: "Kasa Glow Clean",
+        shortDescription: "Professional cleaning services",
+        description: "Premium residential and commercial cleaning services with eco-friendly solutions.",
+        tags: ["Cleaning", "Service", "Business"],
+        link: "https://kasaglowclean.com"
     },
     {
-        title: "Project Alpha",
-        description: "An innovative web application that showcases modern design principles and cutting-edge technology.",
-        tags: ["React", "Node.js", "MongoDB"],
-        link: "#"
+        title: "Epic Training Portal",
+        shortDescription: "Healthcare IT training",
+        description: "Comprehensive training system for hospital staff on Epic EMR workflows, featuring interactive modules and assessments.",
+        tags: ["Healthcare", "Epic", "Training"],
+        link: "https://example.com/epic"
     },
     {
-        title: "Project Beta",
-        description: "A mobile-first responsive application with seamless user experience and beautiful interactions.",
-        tags: ["Vue.js", "Firebase", "TailwindCSS"],
-        link: "#"
+        title: "Slytek Consulting",
+        shortDescription: "IT consulting services",
+        description: "Expert IT consulting for healthcare organizations, specializing in Epic optimization and infrastructure.",
+        tags: ["IT", "Consulting", "Healthcare"],
+        link: "https://slytek.com"
     },
     {
-        title: "Project Gamma",
-        description: "An open-source tool for developers featuring advanced functionality and clean architecture.",
-        tags: ["TypeScript", "Express", "PostgreSQL"],
-        link: "#"
+        title: "DJ Services",
+        shortDescription: "Professional DJ & entertainment",
+        description: "High-energy DJ services for events, weddings, and parties with extensive music library.",
+        tags: ["Music", "Events", "Entertainment"],
+        link: "https://example.com/dj"
     },
     {
-        title: "Project Delta",
-        description: "A creative experiment exploring the boundaries of web animation and interactive design.",
-        tags: ["Three.js", "WebGL", "GSAP"],
-        link: "#"
+        title: "Automation Scripts",
+        shortDescription: "IT automation tools",
+        description: "PowerShell and Python automation scripts for healthcare IT operations and workflows.",
+        tags: ["PowerShell", "Python", "Automation"],
+        link: "https://github.com/yourusername"
     },
     {
-        title: "Project Epsilon",
-        description: "A data visualization dashboard with real-time updates and beautiful charts.",
-        tags: ["D3.js", "React", "WebSocket"],
-        link: "#"
+        title: "Portfolio Projects",
+        shortDescription: "Web development showcase",
+        description: "Collection of web development projects featuring modern design and interactive experiences.",
+        tags: ["Web", "Design", "Development"],
+        link: "https://example.com/portfolio"
     }
 ];
+
+// Modal functionality
+const modal = document.getElementById('projectModal');
+const modalOverlay = document.querySelector('.modal-overlay');
+const closeModalBtn = document.getElementById('closeModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalDescription = document.getElementById('modalDescription');
+const modalTags = document.getElementById('modalTags');
+const modalLink = document.getElementById('modalLink');
+const modalIframe = document.getElementById('modalIframe');
+
+function openModal(project) {
+    modalTitle.textContent = project.title;
+    modalDescription.textContent = project.description;
+    modalTags.innerHTML = project.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+    modalLink.href = project.link;
+    
+    // Load the website in iframe
+    modalIframe.src = project.link;
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    
+    // Clear iframe to stop loading
+    setTimeout(() => {
+        modalIframe.src = 'about:blank';
+    }, 300);
+}
+
+// Close modal events
+closeModalBtn.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', closeModal);
+
+// Close modal with Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+    }
+});
 
 // Render Projects
 function renderProjects() {
@@ -48,43 +98,22 @@ function renderProjects() {
         projectCard.style.animationDelay = `${index * 0.1}s`;
 
         projectCard.innerHTML = `
-            <h2>${project.title}</h2>
-            <p>${project.description}</p>
-            <div class="tags">
-                ${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+            <div class="project-card-inner">
+                <h2>${project.title}</h2>
+                <p class="short-description">${project.shortDescription}</p>
+                <div class="tags">
+                    ${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
             </div>
-            <a href="${project.link}" class="project-link" target="_blank">View Project</a>
         `;
 
-        // Add ripple effect on click
-        projectCard.addEventListener('click', function(e) {
-            if (e.target.tagName !== 'A') {
-                createRipple(e, this);
-            }
+        // Open modal on click
+        projectCard.addEventListener('click', function() {
+            openModal(project);
         });
 
         projectsContainer.appendChild(projectCard);
     });
-}
-
-// Ripple Effect
-function createRipple(event, element) {
-    const ripple = document.createElement('span');
-    const rect = element.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height);
-    const x = event.clientX - rect.left - size / 2;
-    const y = event.clientY - rect.top - size / 2;
-
-    ripple.style.width = ripple.style.height = size + 'px';
-    ripple.style.left = x + 'px';
-    ripple.style.top = y + 'px';
-    ripple.classList.add('ripple');
-
-    element.appendChild(ripple);
-
-    setTimeout(() => {
-        ripple.remove();
-    }, 600);
 }
 
 // Liquid Cursor
@@ -112,15 +141,17 @@ function animateCursor() {
 }
 
 // Expand cursor on hover
-document.querySelectorAll('a, .project-card').forEach(element => {
-    element.addEventListener('mouseenter', () => {
-        cursor.classList.add('expand');
-    });
+function updateCursorListeners() {
+    document.querySelectorAll('a, .project-card, button').forEach(element => {
+        element.addEventListener('mouseenter', () => {
+            cursor.classList.add('expand');
+        });
 
-    element.addEventListener('mouseleave', () => {
-        cursor.classList.remove('expand');
+        element.addEventListener('mouseleave', () => {
+            cursor.classList.remove('expand');
+        });
     });
-});
+}
 
 // Parallax Effect on Blobs
 document.addEventListener('mousemove', (e) => {
@@ -134,20 +165,6 @@ document.addEventListener('mousemove', (e) => {
         const yMove = (y - 0.5) * speed;
 
         blob.style.transform = `translate(${xMove}px, ${yMove}px)`;
-    });
-});
-
-// Smooth Scroll for links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
     });
 });
 
@@ -180,19 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
     animateCursor();
 
     // Observe cards after they're rendered
-    setTimeout(observeCards, 100);
-
-    // Re-add event listeners to dynamically created elements
     setTimeout(() => {
-        document.querySelectorAll('.project-card, .project-link').forEach(element => {
-            element.addEventListener('mouseenter', () => {
-                cursor.classList.add('expand');
-            });
-
-            element.addEventListener('mouseleave', () => {
-                cursor.classList.remove('expand');
-            });
-        });
+        observeCards();
+        updateCursorListeners();
     }, 100);
 });
 
