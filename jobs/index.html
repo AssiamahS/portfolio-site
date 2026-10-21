@@ -289,7 +289,7 @@
 
     <div class="offline" id="offline" role="status">
       <p class="k">Data unavailable</p>
-      <p>The engine's health file could not be loaded right now. The full ledger still lives at <a href="https://assiamahs.github.io/scipio/jobs/" rel="noopener">assiamahs.github.io/scipio/jobs</a>. Try again in a minute.</p>
+      <p>The engine's health file could not be loaded right now. The full ledger still lives at <a href="https://scipio-public.pages.dev/jobs/" rel="noopener">assiamahs.github.io/scipio/jobs</a>. Try again in a minute.</p>
     </div>
 
     <div class="rig" aria-label="Headline numbers" data-needs-data>
@@ -364,7 +364,7 @@
         <div class="step reveal"><p class="k">3 · Match receipts</p><p>The inbox is read for <b>employer confirmations and rejections</b> and each one is matched back to its application. "Confirmed" here means a real receipt, not a hopeful click.</p></div>
       </div>
       <div class="links reveal">
-        <a class="btn btn-amber" href="https://assiamahs.github.io/scipio/jobs/" rel="noopener">Full ledger</a>
+        <a class="btn btn-amber" href="https://scipio-public.pages.dev/jobs/" rel="noopener">Full ledger</a>
         <a class="btn btn-ghost" href="https://github.com/AssiamahS/scipio-audit" rel="noopener">Code on GitHub</a>
       </div>
     </div>
@@ -380,7 +380,22 @@
 <script>
 (function () {
   "use strict";
-  var SRC = "https://assiamahs.github.io/scipio/health.json";
+  // two mirrors of the same file; whichever was generated last wins.
+  // GitHub Pages froze 10/21 (Actions billing hold), Cloudflare is published from the Mac hourly.
+  var SRCS = ["https://scipio-public.pages.dev/health.json", "https://assiamahs.github.io/scipio/health.json"];
+  function getOne(u, signal) {
+    return fetch(u, { cache: "no-store", signal: signal })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+  }
+  function getNewest(signal) {
+    return Promise.allSettled(SRCS.map(function (u) { return getOne(u, signal); })).then(function (rs) {
+      var ok = rs.filter(function (r) { return r.status === "fulfilled" && r.value && typeof r.value === "object"; })
+                 .map(function (r) { return r.value; });
+      if (!ok.length) throw new Error("no mirror answered");
+      ok.sort(function (a, b) { return String(b.generated || "").localeCompare(String(a.generated || "")); });
+      return ok[0];
+    });
+  }
   var PAGE = 40;
 
   // reveal-on-scroll, same pattern as the home page
@@ -539,8 +554,7 @@
   function load() {
     var ctrl = "AbortController" in window ? new AbortController() : null;
     var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, 12000) : null;
-    fetch(SRC, { cache: "no-store", signal: ctrl ? ctrl.signal : undefined })
-      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    getNewest(ctrl ? ctrl.signal : undefined)
       .then(function (d) {
         if (timer) clearTimeout(timer);
         if (!d || typeof d !== "object") throw new Error("bad payload");
