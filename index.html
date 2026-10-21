@@ -49,14 +49,14 @@
     border-bottom:1px solid var(--line);
   }
   nav{display:flex;align-items:center;justify-content:space-between;padding:15px 24px;max-width:var(--max);margin:0 auto}
-  .logo{font-family:"Unbounded",sans-serif;font-weight:900;font-size:.95rem;letter-spacing:1px}
+  .logo{font-family:"Unbounded",sans-serif;font-weight:900;font-size:.95rem;letter-spacing:1px;white-space:nowrap}
   .logo span{color:var(--amber)}
   .nav-links{display:flex;gap:24px;list-style:none;align-items:center}
   .nav-links a{color:var(--muted);font-size:.8rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
   .nav-links a:hover{color:var(--fg);text-decoration:none}
-  .nav-links .cta-link{background:var(--amber);color:var(--night);padding:9px 18px;border-radius:999px;font-weight:700}
+  .nav-links .cta-link{background:var(--amber);color:var(--night);padding:9px 18px;border-radius:999px;font-weight:700;white-space:nowrap}
   .nav-links .cta-link:hover{background:#FFC466}
-  @media(max-width:640px){.nav-links{gap:14px}.nav-links li.hide-sm{display:none}}
+  @media(max-width:640px){nav{padding:12px 16px}.logo{font-size:.72rem;letter-spacing:.5px}.nav-links{gap:14px}.nav-links a{font-size:.72rem;letter-spacing:1px}.nav-links .cta-link{padding:8px 14px}.nav-links li.hide-sm{display:none}}
 
   /* ---------- hero ---------- */
   .hero{padding:96px 0 72px;position:relative;text-align:center;overflow:hidden}
@@ -100,6 +100,8 @@
   /* ---------- sections ---------- */
   section{padding:96px 0;border-top:1px solid var(--line)}
   .sec-eyebrow{font-size:.75rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:12px}
+  h2 br{display:none}
+  @media(min-width:700px){h2 br{display:inline}}
   h2{
     font-family:"Unbounded",sans-serif;font-weight:700;
     font-size:clamp(1.5rem,3.6vw,2.3rem);line-height:1.15;margin-bottom:22px;letter-spacing:-.5px;
@@ -189,6 +191,42 @@
   footer{border-top:1px solid var(--line);padding:48px 0;text-align:center;color:var(--muted);font-size:.88rem}
   footer .fam{margin-top:10px;opacity:.75}
   footer .fam a{color:var(--muted)}
+
+  /* ---------- phone ---------- */
+  @media(max-width:640px){
+    body{font-size:16px}
+    .wrap{padding:0 16px}
+    .hero{padding:56px 0 44px}
+    .hero .lanes{font-size:.66rem;letter-spacing:2.5px;margin-bottom:16px}
+    h1{font-size:clamp(2.4rem,12.5vw,3.2rem);letter-spacing:-.5px}
+    .hero p.lede{font-size:1rem;margin-top:20px;padding:0 8px}
+    .hero-cta{margin-top:28px;gap:10px}
+    .btn{padding:12px 24px;font-size:.8rem}
+    .rig{margin-top:40px}
+    .rig div{padding:16px 18px}
+    .rig .v{font-size:.95rem}
+    section{padding:60px 0}
+    .sec-eyebrow{margin-bottom:8px}
+    h2{font-size:1.5rem;margin-bottom:16px}
+    .prose{font-size:.98rem}
+    .timeline{margin-top:28px;gap:26px;padding-left:22px}
+    .role::before{left:-27px}
+    .role li{font-size:.93rem;padding:4px 0 4px 16px}
+    .skills{margin-top:36px;gap:12px}
+    .skill{padding:18px 20px}
+    .build-grid{margin-top:28px;gap:12px}
+    a.build{padding:20px}
+    .build h3{font-size:1rem}
+    .build p{font-size:.9rem}
+    .music-grid{gap:28px;margin-top:24px}
+    .music-copy .btns{margin-top:16px}
+    .eq{height:64px;gap:5px}
+    .eq span{width:8px}
+    .contact-grid{margin-top:24px;gap:12px}
+    a.ccard{padding:18px 20px}
+    .ccard .v{font-size:.95rem}
+    footer{padding:36px 0;font-size:.82rem}
+  }
 
   @media(prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
